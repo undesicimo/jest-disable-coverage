@@ -5,7 +5,7 @@ const coverageToggle = (isCoverageOn: boolean) => {
 		const workspace = vscode.workspace.workspaceFolders;
 		workspace?.forEach(folder => {
 			const jestConfigPath = vscode.Uri.file(
-				// NOTE: いまのところworkhub-backend/v2_core-apiに使う想定なので、直描き。。
+				// NOTE: いまのところworkhub-backend/v2_core-apiのみ使う想定なので、直描き。。
 				// TODO: 他のrepoに使えるように拡張する
 				`${folder.uri.path}/packages/v2_core-api/jest.common.config.js`
 			);
