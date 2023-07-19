@@ -25,7 +25,22 @@
 				"command": "jest-coverage-disabler.enable",
 				"title": "Enable Coverage"
 			}
-		]
+		],
+		"configuration": {
+			"title": "jest-coverage-disabler",
+			"properties": {
+				"jest-coverage-disabler.jestConfigPath": {
+					"type": "string",
+					"default": null,
+					"description": "上書きしたいjestconfigパスを指定してください。rootから 最初の/は不要"
+				},
+				"jest-coverage-disabler.configDefault": {
+					"type": "string",
+					"default": null,
+					"description": "レポによってデフォルト値違うと思うので、元に戻すときに指定してください。"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",

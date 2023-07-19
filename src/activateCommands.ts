@@ -1,26 +1,27 @@
 import * as vscode from 'vscode';
 
-const coverageToggle = (isCoverageOn: boolean) => {
+const coverageToggleTo = (isCoverageOn: boolean) => {
 	return () => {
-		const workspace = vscode.workspace.workspaceFolders;
-		workspace?.forEach(folder => {
+		const [configPath, defaultConfig] = [
+			vscode.workspace
+				.getConfiguration()
+				.get<string>('jest-coverage-disabler.jestConfigPath'),
+			vscode.workspace
+				.getConfiguration()
+				.get<string>('jest-coverage-disabler.configDefault', ''),
+		];
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+
+		workspaceFolders?.forEach(folder => {
 			const jestConfigPath = vscode.Uri.file(
-				// NOTE: いまのところworkhub-backend/v2_core-apiのみ使う想定なので、直描き。。
-				// TODO: 他のrepoに使えるように拡張する
-				`${folder.uri.path}/packages/v2_core-api/jest.common.config.js`
+				`${folder.uri.path}/${configPath}`
 			);
 			vscode.workspace.fs.readFile(jestConfigPath).then(readData => {
 				const jestConfigData = readData.toString();
 				//ここでcollectCoverageをfalse
 				const newJestConfig = jestConfigData.replace(
-					// HACK: ここも直書き。。
-					//上書き処理
-					isCoverageOn
-						? 'collectCoverage: false'
-						: "collectCoverage: process.env.DISABLE_COVERAGE === 'true' ? false : true",
-					isCoverageOn
-						? "collectCoverage: process.env.DISABLE_COVERAGE === 'true' ? false : true"
-						: 'collectCoverage: false'
+					isCoverageOn ? 'collectCoverage: false' : defaultConfig,
+					isCoverageOn ? defaultConfig : 'collectCoverage: false'
 				);
 				vscode.workspace.fs.writeFile(
 					jestConfigPath,
@@ -29,7 +30,7 @@ const coverageToggle = (isCoverageOn: boolean) => {
 			});
 		});
 		isCoverageOn
-			? vscode.window.showInformationMessage('カバレッジ取るよ🥩')
+			? vscode.window.showInformationMessage(`カバレッジ取るよ🥩,${configPath}`)
 			: vscode.window.showInformationMessage('カバレッジ取らないよ🍕');
 	};
 };
@@ -37,11 +38,11 @@ const coverageToggle = (isCoverageOn: boolean) => {
 export const activateCommands = () => {
 	const disableCoverage = vscode.commands.registerCommand(
 		'jest-coverage-disabler.disable',
-		coverageToggle(false)
+		coverageToggleTo(false)
 	);
 	const enableCoverage = vscode.commands.registerCommand(
 		'jest-coverage-disabler.enable',
-		coverageToggle(true)
+		coverageToggleTo(true)
 	);
 	return { disableCoverage, enableCoverage };
 };
