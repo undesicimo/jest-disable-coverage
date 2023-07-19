@@ -4,6 +4,8 @@
 		"name": "josh",
 		"email": "hogehoge@example.com"
 	},
+	"publisher": "josha0ngel03'",
+	"repository": "https://github.com/undesicimo/jest-disable-coverage.git",
 	"displayName": "jest-coverage-disabler",
 	"description": "カバレッジ収集を一時的に無効化するやつ",
 	"version": "0.0.1",
